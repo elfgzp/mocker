@@ -168,3 +168,40 @@ $ go run main.go
 $ id
 uid=65534(nobody) gid=65534(nogroup) groups=65534(nogroup)
 ```
+
+## Network Namespace
+
+首先，在宿主机上查看一下自己的网络设备，结果如下：
+
+```shell
+$ ifconfig
+eth0      Link encap:Ethernet  HWaddr 08:00:27:da:fb:b7  
+          inet addr:10.0.2.15  Bcast:10.0.2.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:feda:fbb7/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:141879 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:50171 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:139369760 (139.3 MB)  TX bytes:4052092 (4.0 MB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+```
+
+可以看到，宿主机上有 lo、 ethO、 ethl 等网络设备。下面，运行一下程序去 Network Namespace 里面看看。
+
+```shell
+$ go run main.go
+$ ifconfig
+$ 
+```
+
+我们发现，在 Namespace 里面什么网络设备都没有。这样就能断定 Network Namespace 与宿主机之间的网络是处于隔离状态了。
+
