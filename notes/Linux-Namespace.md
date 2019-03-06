@@ -73,5 +73,21 @@ key        msqid      owner      perms      used-bytes   messages
 
 ```
 
+## PID Namespace
 
+再修改以下代码，添加一个 `syscall.CLONE NEWPID`，并且使用 `pstree -pl` 查看进程树关系。
+
+```shell
+$ pstree -pl
+...
+        ...go(6550)-+-main(6569)-+-sh(6572)
+...
+```
+
+然后在 go 运行的 sh 查看进程 id：
+
+```shell
+$ echo $$
+1
+```
 
