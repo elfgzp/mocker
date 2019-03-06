@@ -91,3 +91,65 @@ $ echo $$
 1
 ```
 
+## Mount Namespace
+
+Mount Namespace 是 Linux 第 一个实现 的 Namespace 类型，因此，它的系统调用参数 是 NEWNS ( New Namespace 的缩写)。
+
+首先运行一下代码，然后查看一下 `/proc` 的文件内容。
+
+```shell
+$ go run main.go
+$ ls /proc
+1     16   360   6649  999          ipmi           sched_debug
+10    17   390   6650  acpi         irq            schedstat
+1026  18   407   6664  asound       kallsyms       scsi
+11    19   409   6683  buddyinfo    kcore          self
+119   2    415   6686  bus          key-users      slabinfo
+12    20   46    6690  cgroups      keys           softirqs
+122   21   47    7     cmdline      kmsg           stat
+127   22   48    70    consoles     kpagecount     swaps
+129   23   49    71    cpuinfo      kpageflags     sys
+13    24   5     713   crypto       latency_stats  sysrq-trigger
+136   25   6     8     devices      loadavg        sysvipc
+137   27   6171  881   diskstats    locks          timer_list
+1380  28   6262  884   dma          mdstat         timer_stats
+1383  29   6263  889   driver       meminfo        tty
+1386  3    6264  890   execdomains  misc           uptime
+139   30   6314  892   fb           modules        version
+14    301  6315  9     filesystems  mounts         version_signature
+142   31   6375  913   fs           mtrr           vmallocinfo
+15    32   6376  919   interrupts   net            vmstat
+157   33   6377  920   iomem        pagetypeinfo   zoneinfo
+158   34   6599  922   ioports      partitions
+```
+
+这里看到的 `/proc` 还是宿主机的，内容比较多，接下来把 `/proc` mount 到我们自己的 Namespace 下面来。
+
+```shell
+$ mount -t proc proc /proc
+1          dma          key-users      mtrr          sysrq-trigger
+4          driver       keys           net           sysvipc
+acpi       execdomains  kmsg           pagetypeinfo  timer_list
+asound     fb           kpagecount     partitions    timer_stats
+buddyinfo  filesystems  kpageflags     sched_debug   tty
+bus        fs           latency_stats  schedstat     uptime
+cgroups    interrupts   loadavg        scsi          version
+cmdline    iomem        locks          self          version_signature
+consoles   ioports      mdstat         slabinfo      vmallocinfo
+cpuinfo    ipmi         meminfo        softirqs      vmstat
+crypto     irq          misc           stat          zoneinfo
+devices    kallsyms     modules        swaps
+diskstats  kcore        mounts         sys
+```
+
+可以看到，少了很多文件。下面就可以使用 `ps` 来查看系统的进程了。  
+
+```shell
+$ ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 00:41 pts/0    00:00:00 sh
+root         5     1  0 00:45 pts/0    00:00:00 ps -ef
+```
+
+可以看到，在当前的 Namespace 中， sh 进程是 PID 为 1 的进程。这就说明，当前的 Mount Namespace 中的 mount 和外部空间是隔离的， mount 操作并没有影响到外部。`Docker volume` 也 是利用了这个特性。
+
