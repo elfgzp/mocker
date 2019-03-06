@@ -3,7 +3,7 @@
 > 学习笔记  
 
 ## UTS Namespace
-使用 `pstree -pl` 查看系统进程之间的关系：
+运行 `go run main.go` 后，使用 `pstree -pl` 查看系统进程之间的关系：
 
 ```shell
 $ pstree -pl
@@ -45,3 +45,33 @@ bird
 $ hostname
 ubuntu14
 ```
+
+## IPC Namespace
+
+在 `Cloneflags` 增加 `syscall.CLONE_NEWPIC`，来创建 IPC Namespace，打开两个 shell 来测试一下效果。  
+
+创建一个 queue, 并查看现有的 IPC Message Queues：
+
+```shell
+$ ipcmk -Q
+Message queue id: 0
+$ ipcs -q
+
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages    
+0x66d8524b 0          gzp        644        0            0           
+
+```
+
+然后运行一下 `go run main.go`，查看一下 queues：
+
+```shell
+$ ipcs -q
+
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages    
+
+```
+
+
+
