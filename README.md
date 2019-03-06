@@ -25,7 +25,13 @@ $ ./superupdate.sh
 
 ```shell
 $ sudo apt-get install linux-image-3.13.0-83-generic linux-image-extra-3.13.0-83-generic
-$ sudo apt-get purge linux-image-4.4.0-31-generic linux-image-extra-4.4.0-31-generic
+$ dpkg -l | grep linux-image
+ii  linux-image-3.13.0-83-generic       3.13.0-83.127                                        amd64        Linux kernel image for version 3.13.0 on 64 bit x86 SMP
+ii  linux-image-4.4.0-142-generic       4.4.0-142.168~14.04.1                                amd64        Linux kernel image for version 4.4.0 on 64 bit x86 SMP
+ii  linux-image-extra-3.13.0-83-generic 3.13.0-83.127                                        amd64        Linux kernel extra modules for version 3.13.0 on 64 bit x86 SMP
+ii  linux-image-extra-4.4.0-142-generic 4.4.0-142.168~14.04.1                                amd64        Linux kernel extra modules for version 4.4.0 on 64 bit x86 SMP
+ii  linux-image-generic-lts-xenial      4.4.0.142.122                                        amd64        Generic Linux kernel image
+$ sudo apt-get purge linux-image-4.4.0-142-generic linux-image-extra-4.4.0-142-generic
 $ sudo update-grub
 $ sudo reboot
 ```
