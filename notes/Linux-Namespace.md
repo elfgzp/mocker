@@ -153,3 +153,18 @@ root         5     1  0 00:45 pts/0    00:00:00 ps -ef
 
 可以看到，在当前的 Namespace 中， sh 进程是 PID 为 1 的进程。这就说明，当前的 Mount Namespace 中的 mount 和外部空间是隔离的， mount 操作并没有影响到外部。`Docker volume` 也 是利用了这个特性。
 
+## User Namespace
+
+现在宿主机上查看 root 用户 id：
+
+```shell
+$ id
+uid=0(root) gid=0(root) groups=0(root)
+```
+
+然后查看容器内的 root 用户 id：
+```shell
+$ go run main.go
+$ id
+uid=65534(nobody) gid=65534(nogroup) groups=65534(nogroup)
+```
